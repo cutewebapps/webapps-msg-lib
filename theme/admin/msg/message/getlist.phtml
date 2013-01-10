@@ -1,0 +1,93 @@
+<?php
+$this->title = 'Messages List';
+$this->toolbarIcon = 'icon-48-inbox';
+$this->excludeButtons = array('import', 'add', 'delete');
+?>
+
+<style type="text/css">
+.adminlist td img {width:50px; height: auto;}
+</style>
+<div class="border">
+    <div class="padding">
+        <div id="element-box">
+			<div class="t"><div class="t"><div class="t"></div></div></div>
+			<div class="m">
+				<form id="<?php echo $this->formFilter->getAttrib('id') ?>"
+				      action="<?php echo $this->url($this->inflection + array('results' => $this->results), 'section-default', TRUE) ?>" 
+				      method="post">
+                <table class="adminlist" cellspacing="1">
+                	<thead>
+                		<tr>
+<!--                			<th width="2%"><input type="checkbox" onclick="checkAll(<?php echo $this->totalCount;?>);" value="" name="toggle"/></th>-->
+							<th>ID</th>                			
+							<th>
+								<div style="float: left; width: 25px;">From:</div><?php echo $this->formFilter->mcs_from?>
+								<div style="clear: both; margin-top: 2px;"></div>
+								<div style="float: left; width: 25px;">To:</div><?php echo $this->formFilter->mcr_to?>
+							</th>                			
+							<th>Subject/Body</th>
+							<th>Status<?php echo $this->formFilter->mcm_status?></th>
+							<?php /* @var {$this->form} Zend_Form */?>
+							<th>Processor<?php if ($this->formFilter->mcs_processor) { echo $this->formFilter->mcs_processor; }?></th>
+							<th>Added</th>							
+							<th>Processed</th>							
+                			<th><div class="tab"><?php echo $this->translate('Actions')?></div></th>
+                		</tr>
+            		</thead>
+                	<tbody>
+                    <?php
+//                    $strUrlEdit = $this->url(array('section' => 'manager', 
+//                    							   'module' => 'shopping-cart', 
+//                    							   'controller' => 'discount-coupon', 
+//                    							   'action' => 'edit', 
+//                                                   $this->identityName => $objRow->{$this->identityName}), 
+//                                             'section-default', 
+//                                             TRUE);   
+
+                    $strReplyUrlPrefix = $this->url(array_merge($this->inflection, array('action' => 'reply')), 'section-default', true);
+                    $strGetUrlPrefix   = $this->url(array_merge($this->inflection, array('action' => 'get')), 'section-default', true); 
+                    $objMessageStatusList = new Msg_Message_StatusList();
+                    foreach ($this->listObjects as $intKey => $objRow) {
+                        $strSubject = ($objRow->mcm_subject) ? $objRow->mcm_subject : 'no subject';
+                        $strGetUrl  = $strGetUrlPrefix . '/' . $this->identityName . '/' . $objRow->{$this->identityName};
+                        ?>
+                        <tr <?php echo ($intKey % 2 == 1) ? 'class="row_bg"' : '' ?>>
+<!--                          <td class="left" nowrap="nowrap"><input type="checkbox" id="cb<?php echo $intKey;?>" name="<?php echo $this->identityName ?>[]" value="<?php echo $objRow->{$this->identityName}?>" onclick="isChecked(this.checked)"/></td>-->
+                          <td class="left" nowrap="nowrap"><?php echo $objRow->{$this->identityName}?></td>
+                          <td class="left" nowrap="nowrap">
+                          	from:<?php echo $objRow->mcs_from?><br />
+                          	to:<?php echo $objRow->mcr_to?>
+                      	  </td>
+                          <td class="left">
+                          <?php $strMessageSubjectBody = ''?>
+                    		<a style="font-weight: bold;" href="<?php echo $strGetUrl?>">
+                    		    <?php echo $strSubject?>
+                		    </a><br />
+                    		<span><?php echo $this->escape(substr($objRow->mcm_body, 0, 80)) . '...'?></span>     
+                          </td>
+                          <td class="left" nowrap="nowrap"><?php echo $objMessageStatusList->getName($objRow->mcm_status)?></td>
+                          <td class="left" nowrap="nowrap"><?php echo $objRow->mcs_processor?></td>
+                          <td class="left" nowrap="nowrap" ><?php echo $objRow->mcm_added != '0000-00-00 00:00:00' ? date('m/d/Y H:i:s', strtotime($objRow->mcm_added)) : '' ?></td>
+                          <td class="left" nowrap="nowrap" ><?php echo $objRow->mcm_processed != '0000-00-00 00:00:00' ? date('m/d/Y H:i:s', strtotime($objRow->mcm_processed)) : '' ?></td>
+                          <td class="right" nowrap="nowrap">
+							<?php if ($objRow->mcs_processor === 'Internal' && $objRow->mcr_to === MessageCenter_Message::getInternalReplyMail()) {?>
+							<a title="<?php echo $this->translate('Reply') ?>" href="<?php echo $strReplyUrlPrefix . '/' . $this->identityName . '/' . $objRow->{$this->identityName}?>" ><span style="display:block" title="Reply" class="icon-32 icon-32-edit"></span></a>
+							<?php }?>							                          
+                          </td>
+                        </tr>
+                    <?php }
+                    ?>
+                	</tbody>
+                </table>
+                <input type="hidden" name="boxchecked" value="0" />
+               	</form>
+				<div class="clr"></div>
+			</div>
+			<div class="b">
+				<div class="b">
+					<div class="b"></div>
+				</div>
+			</div>
+   		</div>
+    </div>
+</div>

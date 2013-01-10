@@ -1,0 +1,72 @@
+<?php
+    if (($this->return && !count($this->form->getMessages()))) {
+        $this->redirect($this->url(array('action' => 'getlist') + $this->inflection, 'section-default', TRUE));
+    }
+    
+    $this->title = 'Reply to a message';
+    $this->toolbarIcon = 'icon-48-inbox';
+    $this->form->setAttrib('id', 'message-center-message_form_reply');
+?>
+
+<div class="padding">
+    <?php echo $this->partial('toolbar/edit.phtml', $this->getVars()) ?>
+    <div id="element-box">
+		<form enctype="multipart/form-data" id="<?php echo $this->form->getAttrib('id')?>" action="<?php echo $this->url($this->inflection)?>" method="<?php echo $this->form->getMethod()?>">
+		<fieldset class="adminform ui-widget-content">
+			<legend><?php echo $this->translate('Reply'); ?></legend>
+			<?php
+			$arrAllMessages = $this->form->getMessages();
+			if (count($arrAllMessages)) {?>
+			<ul>
+				<?php foreach ($arrAllMessages as $strElementName => $arrMessages) {
+				        foreach ($arrMessages as $strMessage) {
+				            $strLabel = $this->form->$strElementName->getLabel();
+				        ?>
+						<li style="color: red;"><?php echo $strLabel . ': ' . $strMessage?></li>
+				<?php }
+				}?>
+			</ul>
+			<?php }?>
+
+			<table class="admintable">
+			<tr>
+				<td class="key"></td>
+				<td>Responce</td>
+			</tr>			
+			<tr>
+				<td class="key"><label><?php echo $this->translate('From')?>:</label></td>
+				<td><?php echo $this->strFrom?></td>
+			</tr>
+			<tr>
+				<td class="key"><label><?php echo $this->translate('Subject')?>:</label></td>
+				<td><?php echo nl2br($this->escape($this->objMessage->mcm_subject))?></td>
+			</tr>
+			<tr>
+				<td class="key"><label><?php echo $this->translate('Body')?>:</label></td>
+				<td><?php echo nl2br($this->escape($this->objMessage->mcm_body))?></td>
+			</tr>
+			<tr>
+				<td></td>
+			</tr>
+			<tr>
+				<td class="key"></td>
+				<td>Reply to a message</td>
+			</tr>
+			<tr>
+				<td class="key"><label><?php echo $this->translate('Subject')?>:*</label></td>
+				<td><?php echo $this->form->mcm_subject?></td>
+			</tr>
+			<tr>
+				<td class="key"><label><?php echo $this->translate('Body')?>:*</label></td>
+				<td><?php echo $this->form->mcm_body?></td>
+			</tr>
+            <tr>
+				<td><?php echo $this->form->mcm_id?></td>
+			</tr>
+		 	</table>
+		</fieldset>
+		<div class="clr"></div>
+    </form>
+	</div>
+	<div class="clr"></div>
+</div>
