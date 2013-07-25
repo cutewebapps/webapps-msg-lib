@@ -156,12 +156,29 @@ class Msg_Message extends DBx_Table_Row
         if ( $strTo == '' )
             throw new Msg_Exception( 'No destination for the message' );
 
-        $objReceiver = $tblReceiver->fetchRow(array('mcr_processor = ?' => $strProcessor, 'mcr_to = ?' => $strTo));
-        if (!is_object($objReceiver)){
-            $objReceiver = $tblReceiver->createRow();
-            $objReceiver->mcr_processor = $strProcessor;
-            $objReceiver->mcr_to = $strTo;
-            $objReceiver->save();
+        if (strstr($strTo, ',') ) {
+            $arrTo = explode(',', $strTo);
+            if (is_array($arrTo) ) {
+                foreach ( $arrTo as $strTo) {
+                    $strTo = trim( $strTo );
+                    $objReceiver = $tblReceiver->fetchRow(array('mcr_processor = ?' => $strProcessor, 'mcr_to = ?' => $strTo));
+                    if (!is_object($objReceiver)){
+                        $objReceiver = $tblReceiver->createRow();
+                        $objReceiver->mcr_processor = $strProcessor;
+                        $objReceiver->mcr_to = $strTo;
+                        $objReceiver->save();
+                    }
+                }
+            }
+        } else {
+            $strTo = trim( $strTo );
+            $objReceiver = $tblReceiver->fetchRow(array('mcr_processor = ?' => $strProcessor, 'mcr_to = ?' => $strTo));
+            if (!is_object($objReceiver)){
+                $objReceiver = $tblReceiver->createRow();
+                $objReceiver->mcr_processor = $strProcessor;
+                $objReceiver->mcr_to = $strTo;
+                $objReceiver->save();
+            }
         }
 
         // $strClassName = Sys_Application::getConfig()->msg_classes->$strProcessor;
