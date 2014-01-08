@@ -113,6 +113,20 @@ class Mime_Part {
     }
 
     /**
+     * Get the Content of the current Mime Part in the given encoding.
+     *
+     * @return String
+     */
+    public function getRawContent()
+    {
+        if ($this->_isStream) {
+            return stream_get_contents($this->_content);
+        } else {
+            return $this->_content;
+        }
+    }
+
+    /**
      * Create and return the array of headers for this MIME part
      *
      * @access public
