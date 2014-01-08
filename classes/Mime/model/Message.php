@@ -238,7 +238,7 @@ class Mime_Message
                         $newPart->language = $value;
                         break;
                     default:
-                        throw new Mime_Exception('Unknown header ignored for MimePart:' . $key);
+                        // throw new Mime_Exception('Unknown header ignored for MimePart:' . $key);
                 }
             }
             $res->addPart($newPart);
