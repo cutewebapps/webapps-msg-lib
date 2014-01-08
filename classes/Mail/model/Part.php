@@ -300,7 +300,8 @@ class Mail_Part implements RecursiveIterator, Mail_Part_Interface
                 /**
                  * @see Mail_Exception
                  */
-                throw new Mail_Exception("no Header with Name $name or $lowerName found");
+                // throw new Mail_Exception("no Header with Name $name or $lowerName found");
+		return ''; // otherwise we cannot get emails from IMAP folder...
             }
         }
         $name = $lowerName;
